@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Status — go-gui-org</title>
+<meta name="description" content="Live status dashboard for all go-gui-org projects — releases, CI status, and repository health.">
+<link rel="canonical" href="https://go-gui.com/status.html">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://go-gui.com/status.html">
+<meta property="og:title" content="Project Status — go-gui-org">
+<meta property="og:description" content="Live status dashboard for all go-gui-org projects — releases, CI status, and repository health.">
+<meta property="og:image" content="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://go-gui.com/status.html">
+<meta name="twitter:title" content="Project Status — go-gui-org">
+<meta name="twitter:description" content="Live status dashboard for all go-gui-org projects — releases, CI status, and repository health.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;overflow-x:hidden;background:var(--bg);color:var(--text)}
+
+:root{
+  --bg:#0a111c;
+  --bg-elevated:#0f1624;
+  --bg-card:#131c2c;
+  --bg-card-hover:#192436;
+  --text:#e6ecf5;
+  --text-secondary:#8a9bb5;
+  --text-muted:#5c6d85;
+  --accent:#00c896;
+  --accent-glow:#00c89633;
+  --accent2:#7c5ce7;
+  --accent2-glow:#7c5ce733;
+  --border:#1c283a;
+  --border-light:#243044;
+  --code-bg:#0b1522;
+  --shadow:0 4px 24px rgba(0,0,0,.5);
+  --radius:12px;
+  --radius-sm:8px;
+  --max-width:1200px;
+  --green:#00c896;
+  --green-bg:#00c89618;
+  --red:#ff5c5c;
+  --red-bg:#ff5c5c18;
+  --yellow:#f0c040;
+  --yellow-bg:#f0c04018;
+}
+
+[data-theme="light"]{
+  --bg:#f8f8fc;
+  --bg-elevated:#ffffff;
+  --bg-card:#ffffff;
+  --bg-card-hover:#f4f4fa;
+  --text:#1a1a2e;
+  --text-secondary:#4a4a5a;
+  --text-muted:#787888;
+  --accent:#009970;
+  --accent-glow:#00997022;
+  --accent2:#6c4ce0;
+  --accent2-glow:#6c4ce022;
+  --border:#e0e0ea;
+  --border-light:#eeeeff;
+  --code-bg:#f0f0f8;
+  --shadow:0 4px 24px rgba(0,0,0,.08);
+  --green:#009970;
+  --green-bg:#00997018;
+  --red:#d94040;
+  --red-bg:#d9404018;
+  --yellow:#b08800;
+  --yellow-bg:#b0880018;
+}
+
+h1{font-size:clamp(2rem,4.5vw,3rem);font-weight:900;line-height:1.15;letter-spacing:-0.02em;color:var(--text)}
+h3{font-size:clamp(1rem,2vw,1.2rem);font-weight:600;line-height:1.3;color:var(--text)}
+p{color:var(--text-secondary)}
+a{color:var(--accent);text-decoration:none;transition:color .2s}
+a:hover{color:var(--accent2)}
+
+.container{max-width:var(--max-width);margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+section{padding:clamp(3rem,8vw,6rem) 0}
+
+/* Navigation */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:var(--bg-elevated);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  height:64px;display:flex;align-items:center;
+}
+nav .container{display:flex;align-items:center;justify-content:space-between;width:100%}
+.nav-logo{display:flex;align-items:center;gap:0;font-weight:800;font-size:1.2rem;color:var(--text)}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:clamp(1rem,2.5vw,2rem);list-style:none}
+.nav-links a{color:var(--text-secondary);font-weight:500;font-size:.9rem}
+.nav-links a:hover{color:var(--accent)}
+.nav-links a.active{color:var(--accent)}
+.nav-links .btn-nav{padding:6px 16px;background:var(--accent);color:#000;border-radius:var(--radius-sm);font-weight:600}
+.nav-links .btn-nav:hover{background:var(--accent2);color:#fff}
+.theme-toggle{
+  background:none;border:1px solid var(--border);color:var(--text-secondary);
+  cursor:pointer;padding:6px 10px;border-radius:var(--radius-sm);font-size:1.1rem;
+  transition:all .2s;line-height:1;
+}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer;font-size:1.5rem;padding:4px}
+
+/* Page Header */
+.page-header{padding:clamp(5rem,10vw,7rem) 0 clamp(2rem,4vw,3rem);text-align:center}
+.page-header h1{margin-bottom:.8rem}
+.page-header .subhead{font-size:clamp(.95rem,1.5vw,1.1rem);line-height:1.5;color:var(--text-muted);max-width:640px;margin:0 auto}
+
+/* Summary Bar */
+.summary-bar{
+  display:flex;gap:clamp(.8rem,2vw,1.5rem);justify-content:center;flex-wrap:wrap;
+  margin-bottom:clamp(2rem,4vw,3rem);
+}
+.summary-stat{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 24px;background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+.summary-stat .stat-val{font-size:1.6rem;font-weight:800;line-height:1;color:var(--text)}
+.summary-stat .stat-label{font-size:.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+.summary-stat.good .stat-val{color:var(--green)}
+.summary-stat.warn .stat-val{color:var(--red)}
+a.summary-stat{text-decoration:none;transition:border-color .15s}
+a.summary-stat:hover{border-color:var(--green)}
+
+/* Project Cards */
+.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2vw,1.5rem);margin-bottom:clamp(2rem,4vw,3rem)}
+.project-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:clamp(1.2rem,2.5vw,1.8rem);
+  transition:border-color .3s;
+  display:flex;flex-direction:column;
+}
+.project-card:hover{}
+
+.project-card .card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;gap:12px}
+.project-card .title-area{display:flex;align-items:center;gap:10px;min-width:0}
+.repo-icon{
+  width:36px;height:36px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;font-weight:700;flex-shrink:0;
+}
+.repo-icon.core{background:var(--accent-glow);color:var(--accent)}
+.repo-icon.glyph{background:var(--accent2-glow);color:var(--accent2)}
+.repo-icon.charts{background:#ff6b6b22;color:#ff6b6b}
+.repo-icon.edit{background:#ffd93d22;color:#ffd93d}
+.repo-icon.map{background:#4ecdc422;color:#4ecdc4}
+.repo-icon.term{background:#a8e6cf22;color:#a8e6cf}
+
+.project-card h2{font-size:1.05rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.ci-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:20px;font-size:.72rem;font-weight:600;
+  white-space:nowrap;flex-shrink:0;
+}
+.ci-badge.pass{background:var(--green-bg);color:var(--green)}
+.ci-badge.fail{background:var(--red-bg);color:var(--red)}
+.ci-badge.running{background:var(--yellow-bg);color:var(--yellow)}
+.ci-badge.unknown{background:var(--border);color:var(--text-muted)}
+.ci-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ci-badge.pass .ci-dot{background:var(--green)}
+.ci-badge.fail .ci-dot{background:var(--red)}
+.ci-badge.running .ci-dot{background:var(--yellow)}
+.ci-badge.unknown .ci-dot{background:var(--text-muted)}
+
+.card-desc{font-size:.84rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.55;flex-grow:1}
+
+.meta-row{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  margin-bottom:1rem;font-size:.78rem;
+}
+.meta-item{
+  display:inline-flex;align-items:center;gap:5px;
+  color:var(--text-secondary);font-family:'JetBrains Mono',monospace;
+}
+.meta-item .meta-label{color:var(--text-muted);font-family:Inter,sans-serif}
+.tag-pill{
+  display:inline-flex;align-items:center;
+  padding:3px 8px;background:var(--code-bg);border:1px solid var(--border);
+  border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.75rem;
+  color:var(--accent);font-weight:500;
+}
+.tag-pill.prerelease{color:var(--yellow);border-color:var(--yellow-bg)}
+
+.card-link{font-size:.84rem;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin-top:auto}
+.card-link:hover{gap:8px;transition:gap .2s}
+
+.updated-note{text-align:center;font-size:.78rem;color:var(--text-muted);margin-top:1rem}
+
+/* Footer */
+footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:3rem 0 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:2rem;margin-bottom:2rem}
+.footer-brand .nav-logo{margin-bottom:.5rem;display:inline-flex}
+.footer-brand p{font-size:.85rem;margin-top:.5rem}
+.footer-col h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:.8rem}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:6px}
+.footer-col a{font-size:.85rem;color:var(--text-secondary)}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.5rem;text-align:center;font-size:.8rem;color:var(--text-muted)}
+
+/* Loading skeleton */
+.skeleton{background:var(--bg-card-hover)}
+.skel-line{height:14px;border-radius:4px;margin-bottom:8px}
+.skel-line.short{width:60%}
+
+@media(max-width:1024px){
+  .project-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  nav{height:56px}
+  .nav-links{display:none;position:fixed;top:56px;left:0;right:0;
+    background:var(--bg-elevated);border-bottom:1px solid var(--border);
+    flex-direction:column;padding:1rem;gap:1rem;align-items:flex-start;
+  }
+  .nav-links.open{display:flex}
+  .hamburger{display:block}
+  .project-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .summary-bar{gap:.6rem}
+  .summary-stat{padding:10px 16px}
+  .summary-stat .stat-val{font-size:1.3rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="/" class="nav-logo">go<span>-gui</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/">Home</a></li>
+      <li><a href="/status.html" class="active">Status</a></li>
+      <li><a href="https://github.com/go-gui-org" class="btn-nav" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <h1>Project Status</h1>
+    <p class="subhead" id="subhead">Loading repository data…</p>
+  </div>
+</header>
+
+<section style="padding-top:0">
+  <div class="container">
+    <div class="summary-bar" id="summary"></div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="container">
+    <div class="project-grid" id="grid"></div>
+    <p class="updated-note" id="updated"></p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo">go<span>-gui</span></a>
+        <p>A family of open-source Go libraries for building modern, cross-platform graphical applications — GPU-accelerated, cross-platform, MIT-licensed.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Core</h4>
+        <ul>
+          <li><a href="https://github.com/go-gui-org/go-gui" target="_blank" rel="noopener">go-gui</a></li>
+          <li><a href="https://github.com/go-gui-org/go-glyph" target="_blank" rel="noopener">go-glyph</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Libraries</h4>
+        <ul>
+          <li><a href="https://github.com/go-gui-org/go-charts" target="_blank" rel="noopener">go-charts</a></li>
+          <li><a href="https://github.com/go-gui-org/go-edit" target="_blank" rel="noopener">go-edit</a></li>
+          <li><a href="https://github.com/go-gui-org/go-map" target="_blank" rel="noopener">go-map</a></li>
+          <li><a href="https://github.com/go-gui-org/go-term" target="_blank" rel="noopener">go-term</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Organization</h4>
+        <ul>
+          <li><a href="https://github.com/go-gui-org" target="_blank" rel="noopener">GitHub Organization</a></li>
+          <li><a href="/status.html">Project Status</a></li>
+          <li><a href="https://github.com/go-gui-org/go-gui/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 go-gui-org. All libraries MIT licensed. Built with Go.
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Theme toggle ──
+const html = document.documentElement;
+const toggle = document.getElementById('themeToggle');
+const themes = {dark:'🌙',light:'☀️'};
+function setTheme(t){
+  html.setAttribute('data-theme',t);
+  toggle.textContent=themes[t];
+  try{localStorage.setItem('theme',t)}catch(e){}
+}
+toggle.addEventListener('click',()=>{
+  setTheme(html.getAttribute('data-theme')==='dark'?'light':'dark');
+});
+try{const saved=localStorage.getItem('theme');if(saved)setTheme(saved)}catch(e){}
+
+// ── Mobile hamburger ──
+const hamburger=document.getElementById('hamburger');
+const navLinks=document.getElementById('navLinks');
+hamburger.addEventListener('click',()=>navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));
+
+// ── Data ──
+const REPOS = [
+  { name:'go-gui',     icon:'G',   cls:'core' },
+  { name:'go-glyph',   icon:'Γ',   cls:'glyph' },
+  { name:'go-charts',  icon:'◔',   cls:'charts' },
+  { name:'go-edit',    icon:'{ }', cls:'edit' },
+  { name:'go-map',     icon:'⌖',   cls:'map' },
+  { name:'go-term',    icon:'>_',  cls:'term' },
+];
+
+const CACHE_KEY = 'status-cache';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function cacheGet() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const entry = JSON.parse(raw);
+    if (Date.now() - entry.ts > CACHE_TTL) return null;
+    return entry.data;
+  } catch (e) { return null; }
+}
+
+function cacheSet(data) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() })); } catch (e) {}
+}
+
+// ── API helpers ──
+const API = 'https://api.github.com';
+async function fetchJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function fetchRepo(repo) {
+  const [meta, tags, release, ci, issueSearch] = await Promise.all([
+    fetchJSON(`${API}/repos/go-gui-org/${repo.name}`),
+    fetchJSON(`${API}/repos/go-gui-org/${repo.name}/git/refs/tags`).catch(() => []),
+    fetchJSON(`${API}/repos/go-gui-org/${repo.name}/releases/latest`).catch(() => null),
+    fetchJSON(`${API}/repos/go-gui-org/${repo.name}/actions/runs?branch=main&per_page=1`).catch(() => null),
+    // open_issues_count includes PRs; use search (type:issue) for a true issue-only count.
+    fetchJSON(`${API}/search/issues?q=repo:go-gui-org/${repo.name}+type:issue+state:open&per_page=1`).catch(() => null),
+  ]);
+
+  // Latest tag: prefer release, fall back to semver-sorted git tags
+  let tag = null;
+  if (release && release.tag_name) {
+    tag = release.tag_name;
+  } else if (Array.isArray(tags) && tags.length > 0) {
+    tag = latestTag(tags.map(t => t.ref.replace(/^refs\/tags\//, '')));
+  }
+
+  // CI status
+  let ciStatus = 'unknown';
+  if (ci && ci.workflow_runs && ci.workflow_runs.length > 0) {
+    const run = ci.workflow_runs[0];
+    if (run.status === 'in_progress' || run.status === 'queued') {
+      ciStatus = 'running';
+    } else if (run.conclusion === 'success') {
+      ciStatus = 'pass';
+    } else if (run.conclusion === 'failure' || run.conclusion === 'cancelled' || run.conclusion === 'timed_out') {
+      ciStatus = 'fail';
+    }
+  }
+
+  return {
+    name: repo.name,
+    icon: repo.icon,
+    cls: repo.cls,
+    description: meta.description || '',
+    stars: meta.stargazers_count,
+    // Fall back to open_issues_count (issues + PRs) only if the search call failed.
+    issues: issueSearch && typeof issueSearch.total_count === 'number'
+      ? issueSearch.total_count
+      : meta.open_issues_count,
+    language: meta.language || '',
+    tag,
+    ciStatus,
+  };
+}
+
+// Pick the highest semver from a list of tag names.
+// Filters to root-module tags (vN.N.N with optional pre-release).
+function latestTag(tagNames) {
+  const semver = /^v(\d+)\.(\d+)\.(\d+)(-.+)?$/;
+  let best = null, bestMaj = -1, bestMin = -1, bestPat = -1;
+  for (const t of tagNames) {
+    const m = t.match(semver);
+    if (!m) continue;
+    const maj = +m[1], min = +m[2], pat = +m[3];
+    if (maj > bestMaj || (maj === bestMaj && min > bestMin) || (maj === bestMaj && min === bestMin && pat > bestPat)) {
+      best = t; bestMaj = maj; bestMin = min; bestPat = pat;
+    }
+  }
+  return best;
+}
+
+// ── Render ──
+function ciBadge(status) {
+  const labels = { pass:'Passing', fail:'Failing', running:'Running', unknown:'Unknown' };
+  return `<span class="ci-badge ${status}"><span class="ci-dot"></span>${labels[status]}</span>`;
+}
+
+function tagPill(tag) {
+  if (!tag) return '';
+  const cls = tag.includes('-rc') || tag.includes('-alpha') || tag.includes('-beta') ? 'prerelease' : '';
+  return `<span class="meta-item"><span class="meta-label">tag</span> <span class="tag-pill ${cls}">${tag}</span></span>`;
+}
+
+function renderCard(d) {
+  return `
+    <div class="project-card">
+      <div class="card-top">
+        <div class="title-area">
+          <div class="repo-icon ${d.cls}">${d.icon}</div>
+          <h2><a href="https://github.com/go-gui-org/${d.name}" target="_blank" rel="noopener">${d.name}</a></h2>
+        </div>
+        ${ciBadge(d.ciStatus)}
+      </div>
+      <p class="card-desc">${d.description}</p>
+      <div class="meta-row">
+        ${tagPill(d.tag)}
+        <span class="meta-item"><span class="meta-label">★</span> ${d.stars}</span>
+        <span class="meta-item">${d.language}</span>
+      </div>
+      <a href="https://github.com/go-gui-org/${d.name}" class="card-link" target="_blank" rel="noopener">View on GitHub →</a>
+    </div>`;
+}
+
+function renderSummary(data) {
+  const total = data.length;
+  const passing = data.filter(d => d.ciStatus === 'pass').length;
+  const failing = data.filter(d => d.ciStatus === 'fail').length;
+  const stars = data.reduce((s, d) => s + d.stars, 0);
+  const issues = data.reduce((s, d) => s + d.issues, 0);
+
+  document.getElementById('summary').innerHTML = `
+    <div class="summary-stat"><div class="stat-val">${total}</div><div class="stat-label">Repositories</div></div>
+    <div class="summary-stat good"><div class="stat-val">${passing}</div><div class="stat-label">CI Passing</div></div>
+    <div class="summary-stat warn"><div class="stat-val">${failing}</div><div class="stat-label">CI Failing</div></div>
+    <div class="summary-stat"><div class="stat-val">${stars}</div><div class="stat-label">Total Stars</div></div>
+    <a class="summary-stat good" href="https://github.com/search?q=org%3Ago-gui-org+is%3Aissue+is%3Aopen&type=issues" target="_blank" rel="noopener"><div class="stat-val">${issues}</div><div class="stat-label">Open Issues</div></a>
+  `;
+}
+
+function renderLoading() {
+  document.getElementById('grid').innerHTML = REPOS.map(r => `
+    <div class="project-card">
+      <div class="card-top">
+        <div class="title-area">
+          <div class="repo-icon ${r.cls}">${r.icon}</div>
+          <h2>${r.name}</h2>
+        </div>
+        <span class="ci-badge unknown"><span class="ci-dot"></span>···</span>
+      </div>
+      <p class="card-desc skeleton skel-line" style="width:90%"></p>
+      <p class="card-desc skeleton skel-line short"></p>
+      <div class="meta-row">
+        <span class="meta-item skeleton skel-line" style="width:60px;height:18px"></span>
+        <span class="meta-item skeleton skel-line" style="width:48px;height:18px"></span>
+        <span class="meta-item skeleton skel-line" style="width:32px;height:18px"></span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Main ──
+async function load() {
+  renderLoading();
+
+  // Show cached data immediately if available
+  const cached = cacheGet();
+  if (cached) {
+    renderSummary(cached);
+    document.getElementById('grid').innerHTML = cached.map(renderCard).join('');
+    document.getElementById('subhead').textContent =
+      'Current state of all go-gui-org repositories — releases, CI, and repository health.';
+    document.getElementById('updated').textContent =
+      'Showing cached data. Refreshing…';
+  }
+
+  try {
+    const data = await Promise.all(REPOS.map(fetchRepo));
+    cacheSet(data);
+
+    renderSummary(data);
+    document.getElementById('grid').innerHTML = data.map(renderCard).join('');
+    document.getElementById('subhead').textContent =
+      'Current state of all go-gui-org repositories — releases, CI, and repository health.';
+    document.getElementById('updated').innerHTML =
+      `Data refreshed ${new Date().toLocaleString()}. ` +
+      `<a href="https://github.com/orgs/go-gui-org/repositories" target="_blank" rel="noopener">View all repositories on GitHub →</a>`;
+  } catch (e) {
+    if (cached) {
+      document.getElementById('updated').innerHTML =
+        `Refresh failed (${e.message}). Showing cached data. ` +
+        `<a href="https://github.com/orgs/go-gui-org/repositories" target="_blank" rel="noopener">View all repositories on GitHub →</a>`;
+    } else {
+      document.getElementById('subhead').textContent = 'Could not load repository data.';
+      document.getElementById('updated').textContent =
+        `Error: ${e.message}. GitHub API may be rate-limited — try again later.`;
+      document.getElementById('summary').innerHTML = '';
+      renderLoading(); // keep skeletons
+    }
+  }
+}
+
+load();
+</script>
+
+</body>
+</html>
