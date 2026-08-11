@@ -22,153 +22,158 @@
 <meta name="twitter:image" content="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ── Reset & Custom Properties ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:80px}
-body{font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;overflow-x:hidden;background:var(--bg);color:var(--text)}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;overflow-x:hidden;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
 
 :root{
-  --bg:#0a111c;
-  --bg-elevated:#0f1624;
-  --bg-card:#131c2c;
-  --bg-card-hover:#192436;
-  --text:#e6ecf5;
-  --text-secondary:#8a9bb5;
-  --text-muted:#5c6d85;
-  --accent:#00c896;
-  --accent-glow:#00c89633;
-  --accent2:#7c5ce7;
-  --accent2-glow:#7c5ce733;
-  --border:#1c283a;
-  --border-light:#243044;
-  --code-bg:#0b1522;
-  --shadow:0 4px 24px rgba(0,0,0,.5);
-  --radius:12px;
-  --radius-sm:8px;
-  --max-width:1200px;
-  --green:#00c896;
-  --green-bg:#00c89618;
-  --red:#ff5c5c;
-  --red-bg:#ff5c5c18;
-  --yellow:#f0c040;
-  --yellow-bg:#f0c04018;
+  --bg:#10100e;
+  --bg-elevated:#161613;
+  --bg-code:#0a0a08;
+  --bg-hover:#1a1a17;
+  --text:#e8e6e1;
+  --text-secondary:#a3a098;
+  --text-muted:#716e66;
+  --accent:#00ADD8;
+  --accent-contrast:#f2fbff;
+  --border:#272620;
+  --border-light:#36352e;
+  --radius:6px;
+  --max-width:1080px;
+  --green:#3fb950;
+  --green-bg:#3fb9501a;
+  --red:#f85149;
+  --red-bg:#f851491a;
+  --yellow:#d29922;
+  --yellow-bg:#d299221a;
 }
 
 [data-theme="light"]{
-  --bg:#f8f8fc;
-  --bg-elevated:#ffffff;
-  --bg-card:#ffffff;
-  --bg-card-hover:#f4f4fa;
-  --text:#1a1a2e;
-  --text-secondary:#4a4a5a;
-  --text-muted:#787888;
-  --accent:#009970;
-  --accent-glow:#00997022;
-  --accent2:#6c4ce0;
-  --accent2-glow:#6c4ce022;
-  --border:#e0e0ea;
-  --border-light:#eeeeff;
-  --code-bg:#f0f0f8;
-  --shadow:0 4px 24px rgba(0,0,0,.08);
-  --green:#009970;
-  --green-bg:#00997018;
-  --red:#d94040;
-  --red-bg:#d9404018;
-  --yellow:#b08800;
-  --yellow-bg:#b0880018;
+  --bg:#f7f6f3;
+  --bg-elevated:#fdfdfb;
+  --bg-code:#141412;
+  --bg-hover:#efede7;
+  --text:#1b1a17;
+  --text-secondary:#55524b;
+  --text-muted:#8a867e;
+  --accent:#007ea3;
+  --accent-contrast:#ffffff;
+  --border:#e3e0d9;
+  --border-light:#ece9e2;
+  --green:#1a7f37;
+  --green-bg:#1a7f3718;
+  --red:#cf222e;
+  --red-bg:#cf222e18;
+  --yellow:#9a6700;
+  --yellow-bg:#9a670018;
 }
 
-h1{font-size:clamp(2rem,4.5vw,3rem);font-weight:900;line-height:1.15;letter-spacing:-0.02em;color:var(--text)}
-h3{font-size:clamp(1rem,2vw,1.2rem);font-weight:600;line-height:1.3;color:var(--text)}
+h1{font-family:'Archivo',Inter,sans-serif;font-size:clamp(2.2rem,5vw,3.2rem);font-weight:800;line-height:1.05;letter-spacing:-0.03em}
+h2{font-family:'Archivo',Inter,sans-serif;font-size:1.1rem;font-weight:700;line-height:1.3;letter-spacing:-0.005em}
+h3{font-family:'Archivo',Inter,sans-serif;font-size:1.15rem;font-weight:700;line-height:1.3;letter-spacing:-0.005em}
 p{color:var(--text-secondary)}
-a{color:var(--accent);text-decoration:none;transition:color .2s}
-a:hover{color:var(--accent2)}
+a{color:var(--accent);text-decoration:none;transition:color .15s}
+a:hover{color:var(--text)}
 
 .container{max-width:var(--max-width);margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
-section{padding:clamp(3rem,8vw,6rem) 0}
+section{padding:clamp(3.5rem,8vw,6rem) 0;border-bottom:1px solid var(--border)}
 
-/* Navigation */
+/* ── Navigation ── */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
-  background:var(--bg-elevated);border-bottom:1px solid var(--border);
+  background:var(--bg);border-bottom:1px solid var(--border);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   height:64px;display:flex;align-items:center;
 }
 nav .container{display:flex;align-items:center;justify-content:space-between;width:100%}
-.nav-logo{display:flex;align-items:center;gap:0;font-weight:800;font-size:1.2rem;color:var(--text)}
-.nav-logo span{color:var(--accent)}
-.nav-links{display:flex;align-items:center;gap:clamp(1rem,2.5vw,2rem);list-style:none}
-.nav-links a{color:var(--text-secondary);font-weight:500;font-size:.9rem}
-.nav-links a:hover{color:var(--accent)}
-.nav-links a.active{color:var(--accent)}
-.nav-links .btn-nav{padding:6px 16px;background:var(--accent);color:#000;border-radius:var(--radius-sm);font-weight:600}
-.nav-links .btn-nav:hover{background:var(--accent2);color:#fff}
+.nav-logo{font-family:'Archivo',Inter,sans-serif;font-weight:800;font-size:1.3rem;color:var(--text);letter-spacing:-0.02em}
+.nav-logo .go{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:clamp(1rem,2.5vw,1.8rem);list-style:none}
+.nav-links a{color:var(--text-secondary);font-weight:500;font-size:.92rem}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--text)}
+.nav-links a.active::after{content:'';display:block;height:2px;background:var(--accent);margin-top:3px}
+.nav-links .btn-nav{
+  padding:7px 16px;background:var(--accent);color:var(--accent-contrast);
+  border-radius:var(--radius);font-weight:600;font-size:.92rem;
+}
+.nav-links .btn-nav:hover{color:var(--accent-contrast);opacity:.9}
 .theme-toggle{
   background:none;border:1px solid var(--border);color:var(--text-secondary);
-  cursor:pointer;padding:6px 10px;border-radius:var(--radius-sm);font-size:1.1rem;
-  transition:all .2s;line-height:1;
+  cursor:pointer;padding:6px 10px;border-radius:var(--radius);font-size:1rem;
+  transition:all .15s;line-height:1;font-family:inherit;
 }
-.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
-.hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer;font-size:1.5rem;padding:4px}
+.theme-toggle:hover{border-color:var(--accent);color:var(--text)}
+.hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer;font-size:1.4rem;padding:4px}
 
-/* Page Header */
+/* ── Page Header ── */
 .page-header{padding:clamp(5rem,10vw,7rem) 0 clamp(2rem,4vw,3rem);text-align:center}
 .page-header h1{margin-bottom:.8rem}
-.page-header .subhead{font-size:clamp(.95rem,1.5vw,1.1rem);line-height:1.5;color:var(--text-muted);max-width:640px;margin:0 auto}
+.eyebrow{
+  display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.2rem;
+}
+.page-header .subhead{font-size:clamp(.95rem,1.5vw,1.1rem);line-height:1.55;color:var(--text-muted);max-width:640px;margin:0 auto}
 
-/* Summary Bar */
+/* ── Summary Bar ── */
 .summary-bar{
-  display:flex;gap:clamp(.8rem,2vw,1.5rem);justify-content:center;flex-wrap:wrap;
+  display:flex;gap:clamp(.8rem,2vw,1.2rem);justify-content:center;flex-wrap:wrap;
   margin-bottom:clamp(2rem,4vw,3rem);
 }
 .summary-stat{
   display:flex;align-items:center;gap:10px;
-  padding:14px 24px;background:var(--bg-card);border:1px solid var(--border);
+  padding:14px 24px;background:var(--bg);border:1px solid var(--border);
   border-radius:var(--radius);
 }
-.summary-stat .stat-val{font-size:1.6rem;font-weight:800;line-height:1;color:var(--text)}
-.summary-stat .stat-label{font-size:.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+.summary-stat .stat-val{font-family:'Archivo',Inter,sans-serif;font-size:1.5rem;font-weight:800;line-height:1;color:var(--text);letter-spacing:-0.02em}
+.summary-stat .stat-label{font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
 .summary-stat.good .stat-val{color:var(--green)}
 .summary-stat.warn .stat-val{color:var(--red)}
 a.summary-stat{text-decoration:none;transition:border-color .15s}
-a.summary-stat:hover{border-color:var(--green)}
+a.summary-stat:hover{border-color:var(--accent)}
 
-/* Project Cards */
+/* ── Project Cards ── */
 .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2vw,1.5rem);margin-bottom:clamp(2rem,4vw,3rem)}
 .project-card{
-  background:var(--bg-card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:clamp(1.2rem,2.5vw,1.8rem);
-  transition:border-color .3s;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:clamp(1.2rem,2.5vw,1.6rem);
+  transition:border-color .2s;
   display:flex;flex-direction:column;
 }
-.project-card:hover{}
+.project-card:hover{border-color:var(--border-light)}
 
 .project-card .card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;gap:12px}
 .project-card .title-area{display:flex;align-items:center;gap:10px;min-width:0}
 .repo-icon{
-  width:36px;height:36px;border-radius:var(--radius-sm);
+  width:36px;height:36px;border-radius:var(--radius);
   display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem;font-weight:700;flex-shrink:0;
+  font-size:1rem;font-weight:700;flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;
 }
-.repo-icon.core{background:var(--accent-glow);color:var(--accent)}
-.repo-icon.glyph{background:var(--accent2-glow);color:var(--accent2)}
+.repo-icon.core{background:#00ADD822;color:var(--accent)}
+.repo-icon.glyph{background:#ff7a4522;color:#ff7a45}
 .repo-icon.charts{background:#ff6b6b22;color:#ff6b6b}
-.repo-icon.edit{background:#ffd93d22;color:#ffd93d}
+.repo-icon.edit{background:#e3b34122;color:#e3b341}
 .repo-icon.map{background:#4ecdc422;color:#4ecdc4}
 .repo-icon.term{background:#a8e6cf22;color:#a8e6cf}
 
-.project-card h2{font-size:1.05rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.project-card h2{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.project-card h2 a{color:var(--text)}
+.project-card h2 a:hover{color:var(--accent)}
 
 .ci-badge{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:4px 10px;border-radius:20px;font-size:.72rem;font-weight:600;
-  white-space:nowrap;flex-shrink:0;
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 9px;border-radius:4px;font-size:.72rem;font-weight:600;
+  font-family:'JetBrains Mono',monospace;
+  white-space:nowrap;flex-shrink:0;border:1px solid transparent;
 }
-.ci-badge.pass{background:var(--green-bg);color:var(--green)}
-.ci-badge.fail{background:var(--red-bg);color:var(--red)}
-.ci-badge.running{background:var(--yellow-bg);color:var(--yellow)}
-.ci-badge.unknown{background:var(--border);color:var(--text-muted)}
+.ci-badge.pass{background:var(--green-bg);color:var(--green);border-color:var(--green-bg)}
+.ci-badge.fail{background:var(--red-bg);color:var(--red);border-color:var(--red-bg)}
+.ci-badge.running{background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bg)}
+.ci-badge.unknown{background:var(--bg-code);color:var(--text-muted);border-color:var(--border)}
 .ci-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .ci-badge.pass .ci-dot{background:var(--green)}
 .ci-badge.fail .ci-dot{background:var(--red)}
@@ -188,31 +193,31 @@ a.summary-stat:hover{border-color:var(--green)}
 .meta-item .meta-label{color:var(--text-muted);font-family:Inter,sans-serif}
 .tag-pill{
   display:inline-flex;align-items:center;
-  padding:3px 8px;background:var(--code-bg);border:1px solid var(--border);
+  padding:3px 8px;background:var(--bg-code);border:1px solid var(--border);
   border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.75rem;
   color:var(--accent);font-weight:500;
 }
 .tag-pill.prerelease{color:var(--yellow);border-color:var(--yellow-bg)}
 
 .card-link{font-size:.84rem;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin-top:auto}
-.card-link:hover{gap:8px;transition:gap .2s}
+.card-link:hover{gap:8px;transition:gap .15s;color:var(--accent)}
 
 .updated-note{text-align:center;font-size:.78rem;color:var(--text-muted);margin-top:1rem}
 
-/* Footer */
-footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:3rem 0 2rem}
-.footer-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:2rem;margin-bottom:2rem}
-.footer-brand .nav-logo{margin-bottom:.5rem;display:inline-flex}
-.footer-brand p{font-size:.85rem;margin-top:.5rem}
-.footer-col h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:.8rem}
+/* ── Footer ── */
+footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:3.5rem 0 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:2rem;margin-bottom:2.4rem}
+.footer-brand .nav-logo{margin-bottom:.6rem;display:inline-flex}
+.footer-brand p{font-size:.85rem}
+.footer-col h4{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:.8rem}
 .footer-col ul{list-style:none}
 .footer-col li{margin-bottom:6px}
 .footer-col a{font-size:.85rem;color:var(--text-secondary)}
 .footer-col a:hover{color:var(--accent)}
 .footer-bottom{border-top:1px solid var(--border);padding-top:1.5rem;text-align:center;font-size:.8rem;color:var(--text-muted)}
 
-/* Loading skeleton */
-.skeleton{background:var(--bg-card-hover)}
+/* ── Loading skeleton ── */
+.skeleton{background:var(--bg-hover)}
 .skel-line{height:14px;border-radius:4px;margin-bottom:8px}
 .skel-line.short{width:60%}
 
@@ -223,7 +228,7 @@ footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:
 @media(max-width:768px){
   nav{height:56px}
   .nav-links{display:none;position:fixed;top:56px;left:0;right:0;
-    background:var(--bg-elevated);border-bottom:1px solid var(--border);
+    background:var(--bg);border-bottom:1px solid var(--border);
     flex-direction:column;padding:1rem;gap:1rem;align-items:flex-start;
   }
   .nav-links.open{display:flex}
@@ -240,15 +245,16 @@ footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:
 
 <nav>
   <div class="container">
-    <a href="/" class="nav-logo">go<span>-gui</span></a>
+    <a href="/" class="nav-logo"><span class="go">go</span>-gui</a>
     <ul class="nav-links" id="navLinks">
       <li><a href="/">Home</a></li>
-      <li><a href="https://github.com/go-gui-org/go-gui/wiki" target="_blank" rel="noopener">Documentation</a></li>
+      <li><a href="/showcase/">Showcase</a></li>
+      <li><a href="https://github.com/go-gui-org/go-gui/wiki" target="_blank" rel="noopener">Docs</a></li>
       <li><a href="/status.html" class="active">Status</a></li>
       <li><a href="https://github.com/go-gui-org" class="btn-nav" target="_blank" rel="noopener">GitHub</a></li>
     </ul>
     <div style="display:flex;align-items:center;gap:12px">
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☾</button>
       <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
     </div>
   </div>
@@ -256,6 +262,7 @@ footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:
 
 <header class="page-header">
   <div class="container">
+    <span class="eyebrow">Organization</span>
     <h1>Project Status</h1>
     <p class="subhead" id="subhead">Loading repository data…</p>
   </div>
@@ -278,8 +285,9 @@ footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="nav-logo">go<span>-gui</span></a>
-        <p>A family of open-source Go libraries for building modern, cross-platform graphical applications — GPU-accelerated, cross-platform, MIT-licensed.</p>
+        <a href="/" class="nav-logo"><span class="go">go</span>-gui</a>
+        <p>A family of open-source Go libraries for building cross-platform
+        applications — MIT licensed.</p>
       </div>
       <div class="footer-col">
         <h4>Core</h4>
@@ -301,13 +309,14 @@ footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:
         <h4>Organization</h4>
         <ul>
           <li><a href="https://github.com/go-gui-org" target="_blank" rel="noopener">GitHub Organization</a></li>
+          <li><a href="https://github.com/orgs/go-gui-org/projects/1" target="_blank" rel="noopener">Roadmap</a></li>
           <li><a href="/status.html">Project Status</a></li>
           <li><a href="https://github.com/go-gui-org/go-gui/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      © 2026 go-gui-org. All libraries MIT licensed. Built with Go.
+      © 2026 go-gui-org. Built with Go.
     </div>
   </div>
 </footer>
@@ -316,7 +325,7 @@ footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:
 // ── Theme toggle ──
 const html = document.documentElement;
 const toggle = document.getElementById('themeToggle');
-const themes = {dark:'🌙',light:'☀️'};
+const themes = {dark:'☾',light:'☀'};
 function setTheme(t){
   html.setAttribute('data-theme',t);
   toggle.textContent=themes[t];
