@@ -195,6 +195,11 @@ nav .container{display:flex;align-items:center;justify-content:space-between;wid
 .lib-row .lib-link{font-size:.9rem;font-weight:600;display:inline-flex;align-items:center;gap:4px}
 .lib-row .lib-link:hover{gap:8px;transition:gap .15s}
 
+/* ── Widget gallery ── */
+.gallery-shot{max-width:680px;margin:0 auto;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.gallery-shot img{display:block;width:100%;height:auto}
+.gallery-caption{margin-top:1rem;text-align:center;font-size:.85rem;color:var(--text-muted)}
+
 /* ── Performance ── */
 .perf-num{font-family:'Archivo',Inter,sans-serif;font-size:clamp(3rem,8vw,5.5rem);font-weight:800;letter-spacing:-0.04em;line-height:1}
 .perf-sub{color:var(--text-secondary);font-size:1.05rem;margin-top:.8rem}
@@ -578,6 +583,25 @@ footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:
   </div>
 </section>
 
+<!-- ═══ Widget gallery ═══ -->
+<section id="gallery" style="background:var(--bg-elevated)">
+  <div class="container">
+    <div class="section-header centered">
+      <span class="eyebrow">Widgets</span>
+      <h2>50+ widgets. One API.</h2>
+      <p>
+        Buttons, inputs, tables, trees, menus, dialogs, docks — every widget
+        follows the same config-struct pattern and event model. The gallery
+        below is real, running live in the showcase.
+      </p>
+    </div>
+    <div class="gallery-shot">
+      <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/gallery.png" alt="The go-gui widget gallery" loading="lazy">
+    </div>
+    <p class="gallery-caption">The widget gallery — run it yourself in the <a href="/showcase/">browser showcase</a>.</p>
+  </div>
+</section>
+
 <!-- ═══ Performance ═══ -->
 <section id="performance" style="background:var(--bg-elevated)">
   <div class="container">
@@ -725,7 +749,7 @@ footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:
         </div>
       </a>
       <a class="made-card" href="/showcase/">
-        <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/gallery.png" alt="The go-gui showcase" loading="lazy">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png" alt="The go-gui showcase" loading="lazy">
         <div class="made-body">
           <h3>The showcase</h3>
           <p>Every widget, running live in your browser (WASM) or as a native binary.</p>
