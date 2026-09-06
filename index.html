@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-aAqNARmNUPzjFQQjZodwaADW1MZXRuj7SNoipNc6qHs='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com; media-src 'self' https://raw.githubusercontent.com; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>go-gui — A modern GUI framework for Go</title>
+<meta name="description" content="A modern GUI framework for Go. Build modern, cross-platform applications entirely in Go — no browser runtime, no JavaScript, HTML, or CSS.">
+<meta name="keywords" content="Go GUI framework, Golang GUI, Go desktop app, cross-platform GUI Go, GPU accelerated GUI, Go widgets, go-gui, Go UI toolkit, native Go GUI, Go cross-platform, Go graphics">
+<meta name="author" content="go-gui-org">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#00ADD8">
+<link rel="canonical" href="https://go-gui.com/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://go-gui.com/">
+<meta property="og:site_name" content="go-gui">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="go-gui — A modern GUI framework for Go">
+<meta property="og:description" content="A modern GUI framework for Go. Build modern, cross-platform applications entirely in Go — no browser runtime, no JavaScript, HTML, or CSS.">
+<meta property="og:image" content="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="go-gui showcase — cross-platform GUI built entirely in Go">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://go-gui.com/">
+<meta name="twitter:title" content="go-gui — A modern GUI framework for Go">
+<meta name="twitter:description" content="A modern GUI framework for Go. Build modern, cross-platform applications entirely in Go — no browser runtime, no JavaScript, HTML, or CSS.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png">
+<meta name="twitter:image:alt" content="go-gui showcase — cross-platform GUI built entirely in Go">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://go-gui.com/#organization",
+      "name": "go-gui-org",
+      "url": "https://go-gui.com/",
+      "logo": "https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png",
+      "sameAs": ["https://github.com/go-gui-org"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://go-gui.com/#website",
+      "url": "https://go-gui.com/",
+      "name": "go-gui — A modern GUI framework for Go",
+      "description": "A modern GUI framework for Go. Build modern, cross-platform applications entirely in Go — no browser runtime, no JavaScript, HTML, or CSS.",
+      "publisher": { "@id": "https://go-gui.com/#organization" },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "go-gui",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "macOS, Windows, Linux, iOS, Android, Web",
+      "description": "A modern, GPU-accelerated GUI framework for Go with 50+ widgets, constraint layout, and cross-platform rendering via Metal, OpenGL, and WebGPU.",
+      "url": "https://go-gui.com/",
+      "author": { "@id": "https://go-gui.com/#organization" },
+      "license": "https://github.com/go-gui-org/go-gui/blob/main/LICENSE",
+      "programmingLanguage": "Go",
+      "codeRepository": "https://github.com/go-gui-org/go-gui",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+  ]
+}
+</script>
+<style>
+/* ── Reset & Custom Properties ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;overflow-x:hidden;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+:root{
+  --bg:#10100e;
+  --bg-elevated:#161613;
+  --bg-code:#0a0a08;
+  --text:#e8e6e1;
+  --text-secondary:#a3a098;
+  --text-muted:#716e66;
+  --accent:#00ADD8;
+  --accent-contrast:#f2fbff;
+  --border:#272620;
+  --border-light:#36352e;
+  --radius:6px;
+  --max-width:1080px;
+}
+
+[data-theme="light"]{
+  --bg:#f7f6f3;
+  --bg-elevated:#fdfdfb;
+  --bg-code:#141412;
+  --text:#1b1a17;
+  --text-secondary:#55524b;
+  --text-muted:#8a867e;
+  --accent:#007ea3;
+  --accent-contrast:#ffffff;
+  --border:#e3e0d9;
+  --border-light:#ece9e2;
+}
+
+/* ── Typography ── */
+h1{font-family:'Archivo',Inter,sans-serif;font-size:clamp(2.6rem,6vw,4.2rem);font-weight:800;line-height:1.02;letter-spacing:-0.035em}
+h2{font-family:'Archivo',Inter,sans-serif;font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-bottom:.8rem}
+h3{font-family:'Archivo',Inter,sans-serif;font-size:1.15rem;font-weight:700;line-height:1.3;letter-spacing:-0.005em}
+p{color:var(--text-secondary)}
+a{color:var(--accent);text-decoration:none;transition:color .15s}
+a:hover{color:var(--text)}
+
+/* ── Layout ── */
+.container{max-width:var(--max-width);margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+section{padding:clamp(3.5rem,8vw,6rem) 0;border-bottom:1px solid var(--border)}
+
+/* ── Navigation ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:var(--bg);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  height:64px;display:flex;align-items:center;
+}
+nav .container{display:flex;align-items:center;justify-content:space-between;width:100%}
+.nav-logo{font-family:'Archivo',Inter,sans-serif;font-weight:800;font-size:1.3rem;color:var(--text);letter-spacing:-0.02em}
+.nav-logo .go{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:clamp(1rem,2.5vw,1.8rem);list-style:none}
+.nav-links a{color:var(--text-secondary);font-weight:500;font-size:.92rem}
+.nav-links a:hover{color:var(--text)}
+.nav-links .btn-nav{
+  padding:7px 16px;background:var(--accent);color:var(--accent-contrast);
+  border-radius:var(--radius);font-weight:600;font-size:.92rem;
+}
+.nav-links .btn-nav:hover{color:var(--accent-contrast);opacity:.9}
+.theme-toggle{
+  background:none;border:1px solid var(--border);color:var(--text-secondary);
+  cursor:pointer;padding:6px 10px;border-radius:var(--radius);font-size:1rem;
+  transition:all .15s;line-height:1;font-family:inherit;
+}
+.theme-toggle:hover{border-color:var(--accent);color:var(--text)}
+.hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer;font-size:1.4rem;padding:4px}
+
+/* ── Hero ── */
+.hero{padding:clamp(6rem,14vw,9rem) 0 clamp(3rem,6vw,4.5rem);text-align:center;position:relative}
+.hero .container{position:relative;z-index:1}
+
+/* Tauri-style hero background: two radial glows, a faint oversized wordmark,
+   and a fade to the page background before the shot. */
+.hero-bg{
+  position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  animation:heroFade 1.2s ease;
+}
+.hero-bg::after{
+  content:"";position:absolute;inset:52% 0 0;
+  background:linear-gradient(transparent,var(--bg));
+}
+.bg-wordmark{
+  position:absolute;top:4.5rem;left:50%;transform:translateX(-50%);
+  font-family:'Archivo',Inter,sans-serif;font-weight:900;
+  font-size:clamp(8rem,22vw,20rem);line-height:1;letter-spacing:-0.04em;
+  color:var(--accent);opacity:.05;white-space:nowrap;pointer-events:none;
+}
+.bg-grad,.bg-grad-warm{position:absolute;width:150vh;height:150vh;border-radius:50%}
+.bg-grad{
+  background:radial-gradient(circle,var(--accent) 0%,transparent 70%);
+  top:-50%;left:50%;opacity:.30;
+}
+.bg-grad-warm{
+  background:radial-gradient(circle,#ff7a45 0%,transparent 70%);
+  top:0;left:-50%;opacity:.22;
+}
+[data-theme="light"] .bg-grad{opacity:.18}
+[data-theme="light"] .bg-grad-warm{opacity:.14}
+@keyframes heroFade{from{opacity:0}to{opacity:1}}
+.hero h1{margin-bottom:1.2rem}
+.hero .subhead{
+  font-size:clamp(1.05rem,2vw,1.25rem);line-height:1.55;color:var(--text-muted);
+  max-width:640px;margin:0 auto 2.2rem;
+}
+.hero-cta{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:11px 26px;
+  border-radius:var(--radius);font-weight:600;font-size:.95rem;
+  transition:all .15s;cursor:pointer;border:1px solid transparent;font-family:inherit;
+}
+.btn-primary{background:var(--accent);color:var(--accent-contrast)}
+.btn-primary:hover{opacity:.88;color:var(--accent-contrast)}
+.btn-outline{border-color:var(--border);color:var(--text);background:transparent}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.hero-shot{max-width:82%;margin:0 auto;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.hero-shot img{display:block;width:100%;height:auto}
+.platform-line{margin-top:2.2rem;font-size:.95rem;color:var(--text-muted);letter-spacing:.02em}
+.platform-line .one-module{display:block;margin-top:.35rem;font-size:.8rem;color:var(--text-muted)}
+
+/* ── Section headers ── */
+.section-header{max-width:640px;margin-bottom:3rem}
+.section-header.centered{margin-left:auto;margin-right:auto;text-align:center}
+.section-header p{font-size:1.08rem}
+.eyebrow{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1rem}
+
+/* ── Code ── */
+.code-block{
+  background:var(--bg-code);border:1px solid var(--border);border-radius:var(--radius);
+  overflow-x:auto;margin:2rem 0;
+}
+.code-block pre{padding:clamp(1.1rem,3vw,1.8rem);margin:0}
+.code-block code{font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6;color:var(--text);tab-size:4}
+.kw{color:#79c0ff}.str{color:#a5d6ff}.cm{color:#8b949e;font-style:italic}
+.fn{color:#d2a8ff}.num{color:#ffa657}.tp{color:#ffd9a8}.op{color:#56d4dd}
+[data-theme="light"] .kw{color:#0550ae}
+[data-theme="light"] .str{color:#0a3069}
+[data-theme="light"] .cm{color:#57606a}
+[data-theme="light"] .fn{color:#8250df}
+[data-theme="light"] .num{color:#953800}
+[data-theme="light"] .tp{color:#953800}
+[data-theme="light"] .op{color:#116329}
+.code-close{text-align:center;color:var(--text-muted);font-size:.95rem}
+
+/* ── Architecture diagram ── */
+.diagram{
+  background:var(--bg-code);border:1px solid var(--border);border-radius:var(--radius);
+  padding:clamp(1.1rem,3vw,1.8rem);margin:2rem auto;max-width:560px;overflow-x:auto;
+}
+.diagram pre{margin:0;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.45;color:var(--text-muted)}
+.diagram pre .hl{color:var(--accent)}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;max-width:820px;margin:0 auto}
+.fact h3{margin-bottom:.4rem}
+.fact p{font-size:.9rem}
+
+/* ── Library rows ── */
+.lib-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:start;margin-bottom:4.5rem}
+.lib-row:last-child{margin-bottom:0}
+.lib-row.reverse .lib-img{order:-1}
+.lib-row .lib-img img,.lib-row .lib-img video{max-width:100%;height:auto;border:1px solid var(--border);border-radius:var(--radius);display:block}
+.lib-row h3{margin-bottom:.5rem}
+.lib-row p{font-size:.95rem;margin-bottom:.8rem}
+.lib-row ul{list-style:none;margin-top:.6rem}
+.lib-row li{font-size:.9rem;color:var(--text-secondary);padding:2px 0;padding-left:16px;position:relative}
+.lib-row li::before{content:'·';position:absolute;left:4px;color:var(--accent);font-weight:700}
+.lib-row .lib-link{font-size:.9rem;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.lib-row .lib-link:hover{gap:8px;transition:gap .15s}
+
+/* ── Widget gallery ── */
+.gallery-shot{max-width:680px;margin:0 auto;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.gallery-shot img{display:block;width:100%;height:auto}
+.gallery-caption{margin-top:1rem;text-align:center;font-size:.85rem;color:var(--text-muted)}
+
+/* ── Performance ── */
+.perf-num{font-family:'Archivo',Inter,sans-serif;font-size:clamp(3rem,8vw,5.5rem);font-weight:800;letter-spacing:-0.04em;line-height:1}
+.perf-sub{color:var(--text-secondary);font-size:1.05rem;margin-top:.8rem}
+.perf-shot{max-width:720px;margin:2.2rem auto 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.perf-shot img{display:block;width:100%;height:auto}
+.perf-caption{margin-top:1rem;font-size:.85rem;color:var(--text-muted);max-width:560px;margin-left:auto;margin-right:auto}
+
+/* ── Capability rows (Built for real applications) ── */
+.cap-list{max-width:760px;margin:0 auto}
+.cap-item{display:grid;grid-template-columns:170px 1fr;gap:2rem;padding:1.1rem 0;border-bottom:1px solid var(--border-light)}
+.cap-item:last-child{border-bottom:none}
+.cap-item h3{color:var(--text)}
+.cap-item p{font-size:.95rem}
+
+/* ── Architecture story columns ── */
+.story-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;max-width:920px;margin:2.4rem auto 0}
+.story-col{border-top:2px solid var(--accent);padding-top:1.2rem}
+.story-col .story-index{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);display:block;margin-bottom:.6rem}
+.story-col h3{margin-bottom:.5rem}
+.story-col p{font-size:.9rem}
+.story-close{text-align:center;color:var(--text-secondary);font-size:1.08rem;margin-top:2.4rem}
+
+/* ── Platforms ── */
+.platform-row{display:flex;justify-content:center;flex-wrap:wrap;gap:clamp(1.4rem,4vw,3rem);font-weight:600;font-size:1.15rem;color:var(--text);margin:2rem 0 1rem}
+.platform-note{text-align:center;color:var(--text-muted);font-size:.95rem}
+
+/* ── Get started ── */
+.get-started{text-align:center}
+.get-command{
+  display:inline-block;background:var(--bg-code);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px 24px;
+  font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--accent);margin:1.5rem 0 2rem;
+}
+.get-command .dollar{color:var(--text-muted)}
+.get-links{display:flex;gap:2.4rem;justify-content:center;flex-wrap:wrap;font-weight:600;font-size:.95rem}
+.trust{margin-top:2rem;font-size:.8rem;color:var(--text-muted)}
+
+/* ── Made with go-gui ── */
+.made-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.made-card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:block;color:var(--text);transition:border-color .15s}
+.made-card:hover{border-color:var(--accent)}
+.made-card img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-bottom:1px solid var(--border)}
+.made-card .made-body{padding:1rem 1.1rem}
+.made-card h3{font-size:1rem;margin-bottom:.25rem}
+.made-card p{font-size:.82rem;color:var(--text-muted)}
+.made-card.plain .made-body{padding:1.6rem}
+
+/* ── Footer ── */
+footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:3.5rem 0 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:2rem;margin-bottom:2.4rem}
+.footer-brand .nav-logo{margin-bottom:.6rem}
+.footer-brand p{font-size:.85rem}
+.footer-col h4{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:.8rem}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:6px}
+.footer-col a{font-size:.85rem;color:var(--text-secondary)}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.5rem;text-align:center;font-size:.8rem;color:var(--text-muted)}
+
+/* ── Responsive ── */
+@media(max-width:1024px){
+  .facts,.story-grid,.made-grid{grid-template-columns:repeat(2,1fr)}
+  .lib-row{grid-template-columns:1fr;gap:2rem}
+  .lib-row.reverse .lib-img{order:0}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  nav{height:56px}
+  .nav-links{display:none;position:fixed;top:56px;left:0;right:0;
+    background:var(--bg);border-bottom:1px solid var(--border);
+    flex-direction:column;padding:1rem;gap:1rem;align-items:flex-start;
+  }
+  .nav-links.open{display:flex}
+  .hamburger{display:block}
+  .hero h1{font-size:2.1rem}
+  .facts,.story-grid,.made-grid{grid-template-columns:1fr}
+  .cap-item{grid-template-columns:1fr;gap:.4rem}
+  .footer-grid{grid-template-columns:1fr}
+  .code-block code{font-size:.75rem}
+  .hero-shot{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ Navigation ═══ -->
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo"><span class="go">go</span>-gui</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/showcase/">Showcase</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#libraries">Libraries</a></li>
+      <li><a href="https://github.com/go-gui-org/go-gui/wiki" target="_blank" rel="noopener">Docs</a></li>
+      <li><a href="https://github.com/go-gui-org" target="_blank" rel="noopener">GitHub</a></li>
+      <li><a href="#get-started" class="btn-nav">Get Started</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☾</button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ Hero ═══ -->
+<header class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="bg-wordmark">go-gui</div>
+    <div class="bg-grad"></div>
+    <div class="bg-grad-warm"></div>
+  </div>
+  <div class="container">
+    <h1>A modern GUI framework for Go.</h1>
+    <p class="subhead">
+      Build modern, cross-platform applications entirely in Go.<br>
+      No browser runtime. No JavaScript. No HTML or CSS.
+    </p>
+    <div class="hero-cta">
+      <a href="#get-started" class="btn btn-primary">Get Started</a>
+      <a href="/showcase/" class="btn btn-outline">See the Showcase</a>
+    </div>
+    <div class="hero-shot">
+      <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png" alt="The go-gui showcase application, built with the framework itself" width="800" height="636">
+    </div>
+    <p class="platform-line">
+      macOS · Windows · Linux · iOS · Android · Web
+      <span class="one-module">One Go module. Six platforms.</span>
+    </p>
+  </div>
+</header>
+
+<!-- ═══ The programming model ═══ -->
+<section id="code">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">It's just Go</span>
+      <h2>Your UI is Go code. Your state is Go data.</h2>
+      <p>
+        Your application is a Go program. Write the UI as ordinary Go. Keep
+        application state in Go. Render directly to the GPU.
+      </p>
+    </div>
+    <div class="code-block">
+<pre><code><span class="kw">package</span> main
+
+<span class="kw">import</span> (
+	<span class="str">"fmt"</span>
+
+	<span class="str">"github.com/go-gui-org/go-gui/gui"</span>
+	<span class="str">"github.com/go-gui-org/go-gui/gui/backend"</span>
+)
+
+<span class="kw">type</span> App <span class="kw">struct</span> {
+	Clicks <span class="tp">int</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+	w := gui.SimpleWindow(<span class="str">"Get Started"</span>, <span class="num">300</span>, <span class="num">300</span>, <span class="op">&amp;</span>App{}, <span class="kw">func</span>(w <span class="op">*</span>gui.Window) {
+		w.UpdateView(mainView)
+	})
+
+	backend.Run(w)
+}
+
+<span class="kw">func</span> <span class="fn">mainView</span>(w <span class="op">*</span>gui.Window) gui.View {
+	app := gui.State[App](w)
+
+	<span class="kw">return</span> gui.Column(gui.ContainerCfg{
+		Sizing: gui.FillFill,
+		HAlign: gui.HAlignCenter,
+		VAlign: gui.VAlignMiddle,
+		Content: []gui.View{
+			gui.Label(fmt.Sprintf(<span class="str">"%d Clicks"</span>, app.Clicks), gui.CurrentTheme().B1),
+			gui.TextButton(<span class="str">"gs_counter"</span>, <span class="str">"Click Me"</span>, <span class="kw">func</span>(ctx gui.EventCtx) {
+				gui.State[App](ctx.Window).Clicks<span class="op">++</span>
+			}),
+		},
+	})
+}</code></pre>
+    </div>
+    <p class="code-close">The framework handles layout, rendering, input, and state. You write the application.</p>
+  </div>
+</section>
+
+<!-- ═══ No browser required ═══ -->
+<section id="native" style="background:var(--bg-elevated)">
+  <div class="container">
+    <div class="section-header centered">
+      <span class="eyebrow">The differentiator</span>
+      <h2>No browser required.</h2>
+      <p>
+        go-gui renders your application directly through native GPU backends.
+        Your application stays in Go from the event loop to the pixels.
+      </p>
+    </div>
+    <div class="diagram">
+<pre>            <span class="hl">Your Go application</span>
+                     │
+                     ▼
+                ┌─────────┐
+                │ go-gui  │
+                └────┬────┘
+                     │
+            GPU rendering
+                     │
+       ┌─────────────┼─────────────┐
+       ▼             ▼             ▼
+     Metal         OpenGL        WebGPU</pre>
+    </div>
+    <div class="facts">
+      <div class="fact">
+        <h3>No DOM</h3>
+        <p>Your UI is not a web page.</p>
+      </div>
+      <div class="fact">
+        <h3>No JavaScript bridge</h3>
+        <p>Application logic stays in Go.</p>
+      </div>
+      <div class="fact">
+        <h3>No hidden browser</h3>
+        <p>Desktop apps render natively — Metal on macOS, cgo-free OpenGL on
+        Windows and Linux, Metal on iOS, WebGPU in the browser.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ The ecosystem ═══ -->
+<section id="libraries">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">The ecosystem</span>
+      <h2>More than a widget toolkit.</h2>
+      <p>
+        Six focused libraries, one rendering pipeline. Each library is usable
+        on its own — together they cover the things a real application needs.
+        Examples ship in the repo; larger applications live in the org.
+      </p>
+    </div>
+
+    <div class="lib-row">
+      <div class="lib-content">
+        <h3>go-edit — a code editor, as a widget.</h3>
+        <p>
+          Multi-cursor editing, piece-table undo, syntax highlighting, search
+          with regex, code folding, and a diagnostics API for inline error
+          markers. Embed it in any go-gui window — same rendering system as
+          the rest of your application.
+        </p>
+        <ul>
+          <li>Multi-cursor editing &amp; pluggable grammars</li>
+          <li>Piece-table undo with infinite history</li>
+          <li>Completion hooks for LSP integration</li>
+        </ul>
+        <p style="margin-top:1rem"><a class="lib-link" href="https://github.com/go-gui-org/go-edit" target="_blank" rel="noopener">View on GitHub →</a></p>
+      </div>
+      <div class="lib-img">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-edit/main/docs/screenshot.png" alt="go-edit code editor" loading="lazy">
+      </div>
+    </div>
+
+    <div class="lib-row reverse">
+      <div class="lib-content">
+        <h3>go-charts — data visualization without leaving Go.</h3>
+        <p>
+          18+ chart types — line, bar, area, pie, scatter, candlestick — with
+          incremental updates for real-time dashboards. Zoom, pan, and brush
+          select out of the box.
+        </p>
+        <ul>
+          <li>Headless PNG/SVG export for CI and servers</li>
+          <li>Built-in transforms: SMA, regression, LTTB</li>
+          <li>Interactive zoom, pan, brush select</li>
+        </ul>
+        <p style="margin-top:1rem"><a class="lib-link" href="https://github.com/go-gui-org/go-charts" target="_blank" rel="noopener">View on GitHub →</a></p>
+      </div>
+      <div class="lib-img">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-charts/main/screenshot.png" alt="go-charts charting showcase" loading="lazy">
+      </div>
+    </div>
+
+    <div class="lib-row">
+      <div class="lib-content">
+        <h3>go-glyph — text is harder than it looks.</h3>
+        <p class="text-demo" style="font-size:1.15rem">Hello · مرحبا · 日本語 · 中文 · Ελληνικά</p>
+        <p>
+          Complex scripts, bidirectional text, grapheme clusters, and font
+          fallback. A serious GUI needs serious text — go-glyph delivers
+          browser-quality rendering without a browser.
+        </p>
+        <ul>
+          <li>HarfBuzz shaping, pure-Go rasterization — no cgo, no system deps</li>
+          <li>Rich text with mixed fonts and styles</li>
+          <li>Multi-page glyph atlas with shelf packing</li>
+        </ul>
+        <p style="margin-top:1rem"><a class="lib-link" href="https://github.com/go-gui-org/go-glyph" target="_blank" rel="noopener">View on GitHub →</a></p>
+      </div>
+      <div class="lib-img">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-glyph/main/assets/c.png" alt="go-glyph text rendering capabilities" loading="lazy">
+      </div>
+    </div>
+
+    <div class="lib-row reverse">
+      <div class="lib-content">
+        <h3>go-map — maps as native widgets.</h3>
+        <p>
+          Tiled raster and vector maps with projection handling. OSM and WMS
+          tile sources, kinetic pan and zoom, markers and geospatial overlays.
+        </p>
+        <ul>
+          <li>Legend, gallery &amp; overview companion widgets</li>
+          <li>Polylines, polygons, circles, coordinate transforms</li>
+          <li>Compose with charts, tables, or forms in one window</li>
+        </ul>
+        <p style="margin-top:1rem"><a class="lib-link" href="https://github.com/go-gui-org/go-map" target="_blank" rel="noopener">View on GitHub →</a></p>
+      </div>
+      <div class="lib-img">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-map/main/screenshot.png" alt="go-map map widget" loading="lazy">
+      </div>
+    </div>
+
+    <div class="lib-row">
+      <div class="lib-content">
+        <h3>go-term — an embeddable terminal.</h3>
+        <p>
+          A full terminal emulator as a widget. Spawns a real shell over a
+          PTY, renders through a GPU-accelerated draw canvas, works on macOS,
+          Linux, and Windows.
+        </p>
+        <ul>
+          <li>24-bit Truecolor, Sixel &amp; Kitty graphics</li>
+          <li>Kitty Keyboard Protocol, bracketed paste</li>
+          <li>Scrollback with search and shell marks</li>
+        </ul>
+        <p style="margin-top:1rem"><a class="lib-link" href="https://github.com/go-gui-org/go-term" target="_blank" rel="noopener">View on GitHub →</a></p>
+      </div>
+      <div class="lib-img">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-term/main/screenshot.png" alt="go-term terminal emulator" loading="lazy">
+      </div>
+    </div>
+
+    <div class="lib-row reverse">
+      <div class="lib-content">
+        <h3>go-gui — the framework under all of it.</h3>
+        <p>
+          50+ widgets, from buttons to DataGrid to DockLayout. A theme system,
+          an animation subsystem, and custom GPU shaders — every widget built
+          on the same config-struct pattern and event model.
+        </p>
+        <ul>
+          <li>DataGrid with built-in virtualization and export</li>
+          <li>DockLayout with drag-and-drop panels</li>
+          <li>Keyframe, spring, tween, hero animations</li>
+        </ul>
+        <p style="margin-top:1rem"><a class="lib-link" href="https://github.com/go-gui-org/go-gui" target="_blank" rel="noopener">View on GitHub →</a></p>
+      </div>
+      <div class="lib-img">
+        <video src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/spinners.mp4" autoplay loop muted playsinline></video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Widget gallery ═══ -->
+<section id="gallery" style="background:var(--bg-elevated)">
+  <div class="container">
+    <div class="section-header centered">
+      <span class="eyebrow">Widgets</span>
+      <h2>50+ widgets. One API.</h2>
+      <p>
+        Buttons, inputs, tables, trees, menus, dialogs, docks — every widget
+        follows the same config-struct pattern and event model. The gallery
+        below is real, running live in the showcase.
+      </p>
+    </div>
+    <div class="gallery-shot">
+      <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/gallery.png" alt="The go-gui widget gallery" loading="lazy">
+    </div>
+    <p class="gallery-caption">The widget gallery — run it yourself in the <a href="/showcase/">browser showcase</a>.</p>
+  </div>
+</section>
+
+<!-- ═══ Performance ═══ -->
+<section id="performance" style="background:var(--bg-elevated)">
+  <div class="container">
+    <div class="section-header centered">
+      <span class="eyebrow">Performance</span>
+      <div class="perf-num">5,000 widgets.</div>
+      <p class="perf-sub">Continuously rendered. No virtualization. No special cases.</p>
+    </div>
+    <div class="perf-shot">
+      <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/benchmark.png" alt="The go-gui benchmark window showing live frame timings" loading="lazy">
+    </div>
+    <p class="perf-caption">
+      The benchmark window shows live per-frame numbers — FPS and
+      view/layout/render times in µs — at 10 to 5,000 buttons, labels,
+      toggles, and mixed widgets. The numbers above are real, measured in the
+      window on your machine.
+    </p>
+    <p style="text-align:center;margin-top:1.6rem">
+      <a class="lib-link" href="https://github.com/go-gui-org/go-gui/tree/main/examples/benchmark" target="_blank" rel="noopener">Run the benchmark →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ═══ Built for real applications ═══ -->
+<section id="features">
+  <div class="container">
+    <div class="section-header centered">
+      <span class="eyebrow">Depth</span>
+      <h2>Built for real applications.</h2>
+      <p>Not another button-and-label toolkit.</p>
+    </div>
+    <div class="cap-list">
+      <div class="cap-item">
+        <h3>Layout</h3>
+        <p>Multi-pass constraint layout: rows, columns, wrapping, splitters,
+        docking with drag-and-drop panels.</p>
+      </div>
+      <div class="cap-item">
+        <h3>Data</h3>
+        <p>DataGrid with virtual rows, multi-column sort, per-column filters,
+        inline editing, and CSV/TSV/XLSX/PDF export.</p>
+      </div>
+      <div class="cap-item">
+        <h3>Text</h3>
+        <p>Complex-script shaping, bidirectional text, font fallback, rich
+        text — browser-quality, without a browser.</p>
+      </div>
+      <div class="cap-item">
+        <h3>Accessibility</h3>
+        <p>ARIA roles, IME, AT-SPI on Linux, NSAccessibility on macOS. Built
+        into the core, not bolted on.</p>
+      </div>
+      <div class="cap-item">
+        <h3>Debugging</h3>
+        <p>Layout inspector. Time-travel: scrub backward through application
+        state frame by frame.</p>
+      </div>
+      <div class="cap-item">
+        <h3>Testing</h3>
+        <p>Run the UI headlessly. No display server required.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Simple on the surface ═══ -->
+<section id="architecture" style="background:var(--bg-elevated)">
+  <div class="container">
+    <div class="section-header centered">
+      <span class="eyebrow">The architecture story</span>
+      <h2>Simple on the surface. Powerful underneath.</h2>
+      <p>
+        go-gui uses an immediate-style programming model without the
+        limitations usually associated with immediate-mode GUIs.
+      </p>
+    </div>
+    <div class="story-grid">
+      <div class="story-col">
+        <span class="story-index">01</span>
+        <h3>Plain Go</h3>
+        <p>Views are produced by ordinary Go functions. No template language,
+        no JSX, no bridge.</p>
+      </div>
+      <div class="story-col">
+        <span class="story-index">02</span>
+        <h3>Stable identity</h3>
+        <p>Widgets carry IDs; focus, scrolling, and state persist where it
+        matters, frame after frame.</p>
+      </div>
+      <div class="story-col">
+        <span class="story-index">03</span>
+        <h3>Deterministic state</h3>
+        <p>One typed state slot per window. <code style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent)">gui.State[T]</code> gives the
+        application explicit control over its data.</p>
+      </div>
+    </div>
+    <p class="story-close">The result is a framework that stays simple as your application gets complicated.</p>
+  </div>
+</section>
+
+<!-- ═══ Platforms ═══ -->
+<section id="platforms">
+  <div class="container">
+    <div class="section-header centered" style="margin-bottom:1rem">
+      <span class="eyebrow">Platforms</span>
+      <h2>One codebase.</h2>
+    </div>
+    <div class="platform-row">
+      <span>macOS</span><span>Windows</span><span>Linux</span>
+      <span>iOS</span><span>Android</span><span>Web</span>
+    </div>
+    <p class="platform-note">Same application. Same widgets. Same layout system.
+    Different GPU backends, same code.</p>
+  </div>
+</section>
+
+<!-- ═══ Get started ═══ -->
+<section id="get-started" class="get-started" style="background:var(--bg-elevated);border-bottom:none">
+  <div class="container">
+    <h2>Build something.</h2>
+    <span class="get-command"><span class="dollar">$</span> go get github.com/go-gui-org/go-gui</span>
+    <div class="get-links">
+      <a href="https://github.com/go-gui-org/go-gui/wiki" target="_blank" rel="noopener">Read the documentation →</a>
+      <a href="https://github.com/go-gui-org/go-gui/tree/main/examples" target="_blank" rel="noopener">Browse the examples →</a>
+      <a href="https://github.com/go-gui-org" target="_blank" rel="noopener">View on GitHub →</a>
+    </div>
+    <p class="trust">MIT licensed · Open source · Latest release on <a href="https://github.com/go-gui-org/go-gui/releases/latest" target="_blank" rel="noopener">GitHub</a></p>
+  </div>
+</section>
+
+<!-- ═══ Made with go-gui ═══ -->
+<section id="made-with">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Proof</span>
+      <h2>Made with go-gui.</h2>
+      <p>Real applications. Real code. Click through to the source.</p>
+    </div>
+    <div class="made-grid">
+      <a class="made-card" href="https://github.com/go-gui-org/go-gui/tree/main/examples/solar_system" target="_blank" rel="noopener">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/examples/solar_system/screenshot1.png" alt="The solar system example" loading="lazy">
+        <div class="made-body">
+          <h3>Solar system</h3>
+          <p>An interactive orrery — tilted orbits, shaded planets, a camera that follows. examples/solar_system</p>
+        </div>
+      </a>
+      <a class="made-card" href="/showcase/">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png" alt="The go-gui showcase" loading="lazy">
+        <div class="made-body">
+          <h3>The showcase</h3>
+          <p>Every widget, running live in your browser (WASM) or as a native binary.</p>
+        </div>
+      </a>
+      <a class="made-card" href="https://github.com/go-gui-org/go-gui/tree/main/examples/calculator" target="_blank" rel="noopener">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/calculator.png" alt="The calculator example" loading="lazy">
+        <div class="made-body">
+          <h3>Calculator</h3>
+          <p>examples/calculator</p>
+        </div>
+      </a>
+      <a class="made-card" href="https://github.com/go-gui-org/go-gui/tree/main/examples/todo" target="_blank" rel="noopener">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/todo.png" alt="The todo example" loading="lazy">
+        <div class="made-body">
+          <h3>Todo</h3>
+          <p>examples/todo</p>
+        </div>
+      </a>
+      <a class="made-card" href="https://github.com/go-gui-org/go-gui/tree/main/examples/digital_rain" target="_blank" rel="noopener">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/digital-rain.png" alt="The digital rain example" loading="lazy">
+        <div class="made-body">
+          <h3>Digital rain</h3>
+          <p>examples/digital_rain</p>
+        </div>
+      </a>
+      <a class="made-card" href="https://github.com/go-gui-org/go-gui/tree/main/examples/process_monitor" target="_blank" rel="noopener">
+        <img src="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/process-monitor.png" alt="The process monitor example" loading="lazy">
+        <div class="made-body">
+          <h3>Process monitor</h3>
+          <p>Live system stats with charts. examples/process_monitor</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Footer ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo"><span class="go">go</span>-gui</a>
+        <p>A family of open-source Go libraries for building cross-platform
+        applications — MIT licensed.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Core</h4>
+        <ul>
+          <li><a href="https://github.com/go-gui-org/go-gui" target="_blank" rel="noopener">go-gui</a></li>
+          <li><a href="https://github.com/go-gui-org/go-glyph" target="_blank" rel="noopener">go-glyph</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Libraries</h4>
+        <ul>
+          <li><a href="https://github.com/go-gui-org/go-charts" target="_blank" rel="noopener">go-charts</a></li>
+          <li><a href="https://github.com/go-gui-org/go-edit" target="_blank" rel="noopener">go-edit</a></li>
+          <li><a href="https://github.com/go-gui-org/go-map" target="_blank" rel="noopener">go-map</a></li>
+          <li><a href="https://github.com/go-gui-org/go-term" target="_blank" rel="noopener">go-term</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Organization</h4>
+        <ul>
+          <li><a href="https://github.com/go-gui-org" target="_blank" rel="noopener">GitHub Organization</a></li>
+          <li><a href="https://github.com/orgs/go-gui-org/projects/1" target="_blank" rel="noopener">Roadmap</a></li>
+          <li><a href="/status.html">Status</a></li>
+          <li><a href="https://github.com/go-gui-org/go-gui/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 go-gui-org. Built with Go.
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ Scripts ═══ -->
+<script>
+// Clickjacking guard: never render this page inside a frame.
+if (self !== top) top.location = self.location.href;
+
+// Theme toggle
+const html = document.documentElement;
+const toggle = document.getElementById('themeToggle');
+const themes = {dark:'☾',light:'☀'};
+function setTheme(t){
+  html.setAttribute('data-theme',t);
+  toggle.textContent=themes[t];
+  try{localStorage.setItem('theme',t)}catch(e){}
+}
+toggle.addEventListener('click',()=>{
+  setTheme(html.getAttribute('data-theme')==='dark'?'light':'dark');
+});
+try{const saved=localStorage.getItem('theme');if(saved)setTheme(saved)}catch(e){}
+
+// Mobile hamburger
+const hamburger=document.getElementById('hamburger');
+const navLinks=document.getElementById('navLinks');
+hamburger.addEventListener('click',()=>navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));
+</script>
+
+</body>
+</html>
