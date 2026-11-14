@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-KtoErGb7+JTzNxKOa8d0VD8EjMmvI4/ju9gneFHpoXg='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://raw.githubusercontent.com; media-src 'self' https://raw.githubusercontent.com; connect-src 'self' https://api.github.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Project Status — go-gui-org</title>
+<meta name="description" content="Live status dashboard for all go-gui-org projects — releases, CI status, and repository health.">
+<meta name="keywords" content="go-gui status, go-gui-org projects, Go GUI releases, Go GUI CI status, go-gui dashboard, go-glyph, go-charts, go-edit, go-map, go-term">
+<meta name="author" content="go-gui-org">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#1a1b26">
+<link rel="canonical" href="https://go-gui.com/status.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2316161e'/%3E%3Ctext x='32' y='44' font-family='monospace' font-size='36' font-weight='bold' text-anchor='middle' fill='%237dcfff'%3EG%3C/text%3E%3C/svg%3E">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://go-gui.com/status.html">
+<meta property="og:site_name" content="go-gui">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Project Status — go-gui-org">
+<meta property="og:description" content="Live status dashboard for all go-gui-org projects — releases, CI status, and repository health.">
+<meta property="og:image" content="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="go-gui project status dashboard">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://go-gui.com/status.html">
+<meta name="twitter:title" content="Project Status — go-gui-org">
+<meta name="twitter:description" content="Live status dashboard for all go-gui-org projects — releases, CI status, and repository health.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/go-gui-org/go-gui/main/assets/showcase.png">
+<meta name="twitter:image:alt" content="go-gui project status dashboard">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Project Status — go-gui-org",
+  "description": "Live status dashboard for all go-gui-org projects — releases, CI status, and repository health.",
+  "url": "https://go-gui.com/status.html",
+  "isPartOf": { "@id": "https://go-gui.com/#website" },
+  "about": { "@id": "https://go-gui.com/#organization" },
+  "inLanguage": "en-US"
+}
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1a1b26;
+  --bg-elevated:#24283b;
+  --bg-code:#16161e;
+  --text:#c0caf5;
+  --text-secondary:#a9b1d6;
+  --text-muted:#787c99;
+  --accent:#7dcfff;
+  --green:#9ece6a;
+  --yellow:#e0af68;
+  --red:#f7768e;
+  --magenta:#bb9af7;
+  --blue:#7aa2f7;
+  --border:#2f354d;
+  --radius:8px;
+  --max-width:860px;
+}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;overflow-x:hidden;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+h1,h2{font-family:'JetBrains Mono',monospace;letter-spacing:-0.01em}
+h1{font-size:clamp(1.5rem,3.5vw,2rem);font-weight:700;line-height:1.25;margin-bottom:.9rem}
+h1 .cursor{color:var(--accent)}
+h2{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--text-muted);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+p{color:var(--text-secondary);font-size:.95rem}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,.mono{font-family:'JetBrains Mono',monospace}
+.container{max-width:var(--max-width);margin:0 auto;padding:0 clamp(1rem,4vw,1.5rem)}
+section{padding:clamp(2rem,5vw,3rem) 0}
+/* ── Nav ── */
+nav{position:sticky;top:0;z-index:100;background:var(--bg-code);border-bottom:1px solid var(--border)}
+nav .container{display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;color:var(--text)}
+.nav-logo:hover{text-decoration:none}
+.nav-logo .go{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:1.4rem;list-style:none;font-size:.88rem}
+.nav-links a{color:var(--text-secondary)}
+.nav-links a:hover{color:var(--text);text-decoration:none}
+.nav-links .btn-gh{border:1px solid var(--border);border-radius:6px;padding:5px 14px;color:var(--text)}
+.nav-links .btn-gh:hover{border-color:var(--accent);color:var(--accent)}
+/* ── Header ── */
+.hero{padding:clamp(2.5rem,6vw,4rem) 0 clamp(1.5rem,4vw,2.5rem)}
+.hero .lede{margin-bottom:0}
+/* ── Summary stats ── */
+.summary-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-top:1.4rem}
+.summary-stat{display:block;border:1px solid var(--border);border-radius:6px;padding:.8rem 1rem;background:var(--bg-code);text-align:center}
+a.summary-stat{color:var(--text)}
+a.summary-stat:hover{text-decoration:none;border-color:var(--accent)}
+.summary-stat .stat-val{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;line-height:1.2;color:var(--text)}
+.summary-stat .stat-label{display:block;font-size:.75rem;color:var(--text-muted);margin-top:2px}
+.summary-stat.good .stat-val{color:var(--green)}
+.summary-stat.warn .stat-val{color:var(--red)}
+.dl-note{margin-top:.8rem;font-size:.82rem;color:var(--text-muted);text-align:center}
+/* ── Project cards ── */
+.project-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;margin-top:1.2rem;align-items:start}
+.project-card{background:var(--bg-code);border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem;display:flex;flex-direction:column}
+.project-card:hover{border-color:var(--accent)}
+.project-card .card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.6rem;gap:12px}
+.project-card .title-area{display:flex;align-items:center;gap:10px;min-width:0}
+.repo-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.repo-icon.core{background:rgba(125,207,255,.12);color:var(--accent)}
+.repo-icon.glyph{background:rgba(224,175,104,.12);color:var(--yellow)}
+.repo-icon.charts{background:rgba(247,118,142,.12);color:var(--red)}
+.repo-icon.edit{background:rgba(187,154,247,.12);color:var(--magenta)}
+.repo-icon.map{background:rgba(158,206,106,.12);color:var(--green)}
+.repo-icon.term{background:rgba(122,162,247,.12);color:var(--blue)}
+.project-card h3{font-family:'JetBrains Mono',monospace;font-size:.9rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.project-card h3 a{color:var(--text)}
+.project-card h3 a:hover{color:var(--accent)}
+.ci-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:4px;font-size:.72rem;font-weight:600;font-family:'JetBrains Mono',monospace;white-space:nowrap;flex-shrink:0;border:1px solid transparent}
+.ci-badge.pass{background:rgba(158,206,106,.1);color:var(--green);border-color:rgba(158,206,106,.2)}
+.ci-badge.fail{background:rgba(247,118,142,.1);color:var(--red);border-color:rgba(247,118,142,.2)}
+.ci-badge.running{background:rgba(224,175,104,.1);color:var(--yellow);border-color:rgba(224,175,104,.2)}
+.ci-badge.unknown{background:var(--bg-elevated);color:var(--text-muted);border-color:var(--border)}
+.ci-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ci-badge.pass .ci-dot{background:var(--green)}
+.ci-badge.fail .ci-dot{background:var(--red)}
+.ci-badge.running .ci-dot{background:var(--yellow)}
+.ci-badge.unknown .ci-dot{background:var(--text-muted)}
+.card-desc{font-size:.82rem;color:var(--text-muted);margin-bottom:.8rem;line-height:1.55;flex-grow:1}
+.meta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:.8rem;font-size:.78rem}
+.meta-item{display:inline-flex;align-items:center;gap:5px;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:.78rem}
+.meta-item .meta-label{color:var(--text-muted);font-family:Inter,sans-serif}
+.tag-pill{display:inline-flex;align-items:center;padding:2px 8px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--accent);font-weight:500}
+.tag-pill.prerelease{color:var(--yellow);border-color:rgba(224,175,104,.3)}
+.card-link{font-size:.85rem;font-weight:600}
+/* ── Loading skeleton ── */
+.skeleton{background:var(--bg-elevated)}
+.skel-line{height:14px;border-radius:4px;margin-bottom:8px}
+/* ── Footer ── */
+footer{border-top:1px solid var(--border);padding:2rem 0;font-size:.82rem;color:var(--text-muted)}
+footer .container{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+footer a{color:var(--text-secondary)}
+@media(max-width:640px){
+  .summary-bar{grid-template-columns:1fr}
+  .project-grid{grid-template-columns:1fr}
+  .nav-links a:not(.btn-gh){display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="/" class="nav-logo"><span class="go">go</span>-gui</a>
+    <ul class="nav-links">
+      <li><a href="/">home</a></li>
+      <li><a href="/showcase/">showcase</a></li>
+      <li><a href="https://github.com/go-gui-org/go-gui/wiki" target="_blank" rel="noopener">docs</a></li>
+      <li><a class="btn-gh" href="https://github.com/go-gui-org" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <h1>Project status.<span class="cursor">_</span></h1>
+    <p class="lede" id="subhead">Loading repository data…</p>
+    <div class="summary-bar" id="summary"></div>
+  </div>
+</header>
+
+<section id="repos">
+  <div class="container">
+    <h2>repos</h2>
+    <div class="project-grid" id="grid"></div>
+    <p class="dl-note" id="updated"></p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <span>$ go-gui — part of <a href="https://go-gui.com" target="_blank" rel="noopener">go-gui-org</a> · MIT licensed</span>
+    <span>source: <a href="https://github.com/go-gui-org/go-gui" target="_blank" rel="noopener">go-gui-org/go-gui</a></span>
+  </div>
+  <div class="container">
+    <span><a href="/">home</a> · <a href="/showcase/">showcase</a> · <a href="https://github.com/go-gui-org/go-gui/wiki" target="_blank" rel="noopener">docs</a> · <a href="https://github.com/orgs/go-gui-org/projects/1" target="_blank" rel="noopener">roadmap</a></span>
+    <span>© 2026 go-gui-org</span>
+  </div>
+</footer>
+
+<script>
+if(self!==top)top.location=self.location.href;
+
+// ── Data ──
+const REPOS = [
+  { name:'go-gui',     icon:'G',   cls:'core' },
+  { name:'go-glyph',   icon:'Γ',   cls:'glyph' },
+  { name:'go-charts',  icon:'◔',   cls:'charts' },
+  { name:'go-edit',    icon:'{ }', cls:'edit' },
+  { name:'go-map',     icon:'⌖',   cls:'map' },
+  { name:'go-term',    icon:'>_',  cls:'term' },
+];
+
+const CACHE_KEY = 'status-cache';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function cacheGet() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const entry = JSON.parse(raw);
+    if (Date.now() - entry.ts > CACHE_TTL) return null;
+    return entry.data;
+  } catch (e) { return null; }
+}
+
+function cacheSet(data) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() })); } catch (e) {}
+}
+
+// ── API helpers ──
+const API = 'https://api.github.com';
+async function fetchJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function fetchRepo(repo) {
+  const [meta, tags, release, ci, issueSearch] = await Promise.all([
+    fetchJSON(`${API}/repos/go-gui-org/${repo.name}`),
+    fetchJSON(`${API}/repos/go-gui-org/${repo.name}/git/refs/tags`).catch(() => []),
+    fetchJSON(`${API}/repos/go-gui-org/${repo.name}/releases/latest`).catch(() => null),
+    fetchJSON(`${API}/repos/go-gui-org/${repo.name}/actions/runs?branch=main&per_page=1`).catch(() => null),
+    // open_issues_count includes PRs; use search (type:issue) for a true issue-only count.
+    fetchJSON(`${API}/search/issues?q=repo:go-gui-org/${repo.name}+type:issue+state:open&per_page=1`).catch(() => null),
+  ]);
+
+  // Latest tag: prefer release, fall back to semver-sorted git tags
+  let tag = null;
+  if (release && release.tag_name) {
+    tag = release.tag_name;
+  } else if (Array.isArray(tags) && tags.length > 0) {
+    tag = latestTag(tags.map(t => t.ref.replace(/^refs\/tags\//, '')));
+  }
+
+  // CI status
+  let ciStatus = 'unknown';
+  if (ci && ci.workflow_runs && ci.workflow_runs.length > 0) {
+    const run = ci.workflow_runs[0];
+    if (run.status === 'in_progress' || run.status === 'queued') {
+      ciStatus = 'running';
+    } else if (run.conclusion === 'success') {
+      ciStatus = 'pass';
+    } else if (run.conclusion === 'failure' || run.conclusion === 'cancelled' || run.conclusion === 'timed_out') {
+      ciStatus = 'fail';
+    }
+  }
+
+  return {
+    name: repo.name,
+    icon: repo.icon,
+    cls: repo.cls,
+    description: meta.description || '',
+    stars: meta.stargazers_count,
+    // Fall back to open_issues_count (issues + PRs) only if the search call failed.
+    issues: issueSearch && typeof issueSearch.total_count === 'number'
+      ? issueSearch.total_count
+      : meta.open_issues_count,
+    language: meta.language || '',
+    tag,
+    ciStatus,
+  };
+}
+
+// Pick the highest semver from a list of tag names.
+// Filters to root-module tags (vN.N.N with optional pre-release).
+function latestTag(tagNames) {
+  const semver = /^v(\d+)\.(\d+)\.(\d+)(-.+)?$/;
+  let best = null, bestMaj = -1, bestMin = -1, bestPat = -1;
+  for (const t of tagNames) {
+    const m = t.match(semver);
+    if (!m) continue;
+    const maj = +m[1], min = +m[2], pat = +m[3];
+    if (maj > bestMaj || (maj === bestMaj && min > bestMin) || (maj === bestMaj && min === bestMin && pat > bestPat)) {
+      best = t; bestMaj = maj; bestMin = min; bestPat = pat;
+    }
+  }
+  return best;
+}
+
+// ── Render ──
+function ciBadge(status) {
+  const labels = { pass:'Passing', fail:'Failing', running:'Running', unknown:'Unknown' };
+  return `<span class="ci-badge ${status}"><span class="ci-dot"></span>${labels[status]}</span>`;
+}
+
+function tagPill(tag) {
+  if (!tag) return '';
+  const cls = tag.includes('-rc') || tag.includes('-alpha') || tag.includes('-beta') ? 'prerelease' : '';
+  return `<span class="meta-item"><span class="meta-label">tag</span> <span class="tag-pill ${cls}">${tag}</span></span>`;
+}
+
+function renderCard(d) {
+  return `
+    <div class="project-card">
+      <div class="card-top">
+        <div class="title-area">
+          <div class="repo-icon ${d.cls}">${d.icon}</div>
+          <h3><a href="https://github.com/go-gui-org/${d.name}" target="_blank" rel="noopener">${d.name}</a></h3>
+        </div>
+        ${ciBadge(d.ciStatus)}
+      </div>
+      <p class="card-desc">${d.description}</p>
+      <div class="meta-row">
+        ${tagPill(d.tag)}
+        <span class="meta-item"><span class="meta-label">★</span> ${d.stars}</span>
+        <span class="meta-item">${d.language}</span>
+      </div>
+      <a href="https://github.com/go-gui-org/${d.name}" class="card-link" target="_blank" rel="noopener">View on GitHub →</a>
+    </div>`;
+}
+
+function renderSummary(data) {
+  const total = data.length;
+  const passing = data.filter(d => d.ciStatus === 'pass').length;
+  const failing = data.filter(d => d.ciStatus === 'fail').length;
+  const stars = data.reduce((s, d) => s + d.stars, 0);
+  const issues = data.reduce((s, d) => s + d.issues, 0);
+
+  document.getElementById('summary').innerHTML = `
+    <div class="summary-stat"><div class="stat-val">${total}</div><div class="stat-label">Repositories</div></div>
+    <div class="summary-stat good"><div class="stat-val">${passing}</div><div class="stat-label">CI Passing</div></div>
+    <div class="summary-stat warn"><div class="stat-val">${failing}</div><div class="stat-label">CI Failing</div></div>
+    <div class="summary-stat"><div class="stat-val">${stars}</div><div class="stat-label">Total Stars</div></div>
+    <a class="summary-stat good" href="https://github.com/search?q=org%3Ago-gui-org+is%3Aissue+is%3Aopen&type=issues" target="_blank" rel="noopener"><div class="stat-val">${issues}</div><div class="stat-label">Open Issues</div></a>
+  `;
+}
+
+function renderLoading() {
+  document.getElementById('grid').innerHTML = REPOS.map(r => `
+    <div class="project-card">
+      <div class="card-top">
+        <div class="title-area">
+          <div class="repo-icon ${r.cls}">${r.icon}</div>
+          <h3>${r.name}</h3>
+        </div>
+        <span class="ci-badge unknown"><span class="ci-dot"></span>···</span>
+      </div>
+      <p class="card-desc skeleton skel-line" style="width:90%"></p>
+      <p class="card-desc skeleton skel-line" style="width:60%"></p>
+      <div class="meta-row">
+        <span class="meta-item skeleton skel-line" style="width:60px;height:18px"></span>
+        <span class="meta-item skeleton skel-line" style="width:48px;height:18px"></span>
+        <span class="meta-item skeleton skel-line" style="width:32px;height:18px"></span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Main ──
+async function load() {
+  renderLoading();
+
+  // Show cached data immediately if available
+  const cached = cacheGet();
+  if (cached) {
+    renderSummary(cached);
+    document.getElementById('grid').innerHTML = cached.map(renderCard).join('');
+    document.getElementById('subhead').textContent =
+      'Current state of all go-gui-org repositories — releases, CI, and repository health.';
+    document.getElementById('updated').textContent =
+      'Showing cached data. Refreshing…';
+  }
+
+  try {
+    const data = await Promise.all(REPOS.map(fetchRepo));
+    cacheSet(data);
+
+    renderSummary(data);
+    document.getElementById('grid').innerHTML = data.map(renderCard).join('');
+    document.getElementById('subhead').textContent =
+      'Current state of all go-gui-org repositories — releases, CI, and repository health.';
+    document.getElementById('updated').innerHTML =
+      `Data refreshed ${new Date().toLocaleString()}. ` +
+      `<a href="https://github.com/orgs/go-gui-org/repositories" target="_blank" rel="noopener">View all repositories on GitHub →</a>`;
+  } catch (e) {
+    if (cached) {
+      document.getElementById('updated').innerHTML =
+        `Refresh failed (${e.message}). Showing cached data. ` +
+        `<a href="https://github.com/orgs/go-gui-org/repositories" target="_blank" rel="noopener">View all repositories on GitHub →</a>`;
+    } else {
+      document.getElementById('subhead').textContent = 'Could not load repository data.';
+      document.getElementById('updated').textContent =
+        `Error: ${e.message}. GitHub API may be rate-limited — try again later.`;
+      document.getElementById('summary').innerHTML = '';
+      renderLoading(); // keep skeletons
+    }
+  }
+}
+
+load();
+</script>
+
+</body>
+</html>
